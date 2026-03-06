@@ -3,15 +3,15 @@
 #include <stdio.h>
 
 int main() {
+
     WSADATA wsa;
     if(WSAStartup(MAKEWORD(2,2), &wsa)!=0){
         WSACleanup();
         return 1;
     }
 
-    struct arena memArena = {};
+    arena memArena = {};
 
     //_beginthread();
-
     return 0;
 }

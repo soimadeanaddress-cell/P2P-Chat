@@ -2,15 +2,15 @@
 
 //Credit to Lucas Ross for the code: https://github.com/upprsk
 
-static inline void arena_block_init(struct arena_block* b, struct arena_block *next){
+static inline void arena_block_init(arena_block* b, arena_block *next){
     b->next = next;
 
   b->buffer_end = ((UINT8 *)b) + BUFFER_SIZE;
   b->head = b->buffer;
 }
 
-static struct arena_block *arena_new_block(struct arena *a) {
-  struct arena_block *blk = malloc(BUFFER_SIZE); //Should definitely be switched out later on.
+static arena_block *arena_new_block(arena *a) {
+  arena_block *blk = malloc(BUFFER_SIZE); //Should definitely be switched out later on.
   if (!blk) return NULL;
 
   arena_block_init(blk, a->blocks);
@@ -19,7 +19,7 @@ static struct arena_block *arena_new_block(struct arena *a) {
   return blk;
 }
 
-static void *arena_block_alloc(struct arena_block *b, size_t size, size_t align) {
+static void *arena_block_alloc(arena_block *b, size_t size, size_t align) {
   UINT8 *head = (UINT8 *)ALIGN_TO((uintptr_t)b->head, align);
   if (head + size > b->buffer_end) {
     return NULL;
@@ -30,7 +30,7 @@ static void *arena_block_alloc(struct arena_block *b, size_t size, size_t align)
   return head;
 }
 
-static struct arena_block *arena_get_block(struct arena *a) {
+static arena_block *arena_get_block(arena *a) {
   if (a->blocks)
     return a->blocks;
 
@@ -38,8 +38,8 @@ static struct arena_block *arena_get_block(struct arena *a) {
   return arena_new_block(a);
 }
 
-static void *arena_alloc(struct arena *a, size_t size, size_t align) {
-  struct arena_block *blk = arena_get_block(a);
+static void *arena_alloc(arena *a, size_t size, size_t align) {
+  arena_block *blk = arena_get_block(a);
   if (!blk)
     return NULL;
 
@@ -51,13 +51,13 @@ static void *arena_alloc(struct arena *a, size_t size, size_t align) {
   return arena_block_alloc(blk, size, align);
 }
 
-static void arena_clear(struct arena *a) {
-  struct arena_block *b = a->blocks;
+static void arena_clear(arena *a) {
+  arena_block *b = a->blocks;
   while (b) {
-    struct arena_block *next = b->next;
+    arena_block *next = b->next;
     free(b);
     b = next;
   }
 
   a->blocks = NULL;
-}
+} 
